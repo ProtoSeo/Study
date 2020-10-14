@@ -49,11 +49,9 @@ Staff development plan|Describes how the skills and experience of the project te
 ||문제의 복잡도||난이도, 유형
 |프로젝트 요소|시스템의 크기|입/출력 양식의 수
 ||시스템 신뢰도|정확성, 견고성, 완전성, 일관성
-|
 ||인적 자원|관리자, 개발자, 지원체계
 |자원 요소|H/W 자원|개발 장비, 운영 장비
 ||S/W 자원|개발지원 도구
-|
 생산성 요소|개발자 능력|경험, 전문지식 확보 정도|
 ||개발 방법론|최신 기법, 관리 방법론
 
@@ -64,7 +62,8 @@ Staff development plan|Describes how the skills and experience of the project te
 - 프로그래밍 언어와 무관하게 객관적인 복잡도 산정이 가능
 
 > 기능 점수 산정 절차
-> <img src="Activityprocess1.png" alt="Activityprocess" >
+> <img src="images/Activityprocess1.png" alt="Activityprocess" >
+
 
 1. 기능점수 모델:UTF(Unadjusted Function Point) 산정
 - 다섯 가지 소프트웨어 구성 요소
@@ -185,14 +184,14 @@ UFP = C(input) * W(input) + C(output) * W(output) + C(inquiry) * W(inquiry) +C(l
     * 일정 통제
         + 계획 대비 일정 차이를 모니터링 하여 필요한 조치를 취함
 
-<img src="Activityprocess2.png" alt="Activityprocess2">
+<img src="images/Activityprocess2.png" alt="Activityprocess2">
 
 - 프로젝트에서의 활동(Activity)
     * 관리 측면에서 진행 상황을 판단할 수 있도록 가시적 산출물을 생산하도록 조직되어야 함
 
 - Milestones(이정표)
     * 프로젝트 진행 과정에서 중요한 이벤트 또는 활동의 완료 시점
-    <img src="Milestones.png" alt="Milestones">
+    <img src="images/Milestones.png" alt="Milestones">
 
 - Deliverables(산출물)
     * 고객에게 제공되는 프로젝트 결과물
@@ -200,7 +199,7 @@ UFP = C(input) * W(input) + C(output) * W(output) + C(inquiry) * W(inquiry) +C(l
 - 일정계획 수립
     * 개발 프로세스를 이루는 활동을 파악하고 순서와 일정을 정하는 작업
     * 과정
-    <img src="Activityprocess3.png" alt="Activityprocess3">
+    <img src="images/Activityprocess3.png" alt="Activityprocess3">
 
 - PERT/CPM 차트
     * Program Evaluation and Review Technique/ Critical Path Method
@@ -219,19 +218,19 @@ UFP = C(input) * W(input) + C(output) * W(output) + C(inquiry) * W(inquiry) +C(l
     * 산출물 생산에 소요되는 작업 결정
     * 작업 예상 시간 결정
     * 선행 작업 파악: 작업의 종속 관계(선후 관계 파악)
-<img src="PERT-CPM0.png" alt="PERT-CPM0">
+<img src="images/PERT-CPM0.png" alt="PERT-CPM0">
 
 - PERT/CPM 차트 작성
-<img src="PERT-CPM1.png" alt="PERT-CPM1">
+<img src="images/PERT-CPM1.png" alt="PERT-CPM1">
 
 - PERT/CPM 차트 작성(간략한 표현)
-<img src="PERT-CPM2.png" alt="PERT-CPM2">
+<img src="images/PERT-CPM2.png" alt="PERT-CPM2">
 
 - 임계경로 구하기
     * 임계경로(Critical Path)
         + Pert Chart 에서 소요 기간이 가장 긴 경로
         + 프로젝트를 완수하기 위해 필요한 최소 시간(minimum time)을 나타냄
-    <img src="CriticalPath.png" alt="CriticalPath">
+    <img src="images/CriticalPath.png" alt="CriticalPath">
 
 - 간트(Gantt) 차트
     * 활동 별로 작업의 시작과 끝을 나타낸 그래프
@@ -241,12 +240,12 @@ UFP = C(input) * W(input) + C(output) * W(output) + C(inquiry) * W(inquiry) +C(l
     * 파란색 막대: 여유시간
     * 계획 대비 진척도를 표시
     * 개인별 일정표 
-    <img src="Gantt.png" alt="Gantt">
+    <img src="images/Gantt.png" alt="Gantt">
 
 - 애자일 일정 계획
 스토리카드 단위의 일정 계획
     * 사용자 스토리, 점수(유스케이스 개발에 소요되는 노력), 비즈니스 우선순위, 연관된 스토리 등을 기록
-    <img src="Agile.png" alt="Agile">
+    <img src="images/Agile.png" alt="Agile">
 
 ## **프로젝트 인적 자원 관리**
 - 프로젝트에 이상적인 사람(ideal people)을 선정하지 못할 가능성 있음
@@ -360,7 +359,7 @@ UFP = C(input) * W(input) + C(output) * W(output) + C(inquiry) * W(inquiry) +C(l
     * 위험 모니터링
         + 프로젝트 전반에 걸쳐 위험 모니터링
     
-    <img src="RiskProcess.png" alt="RiskProcess">
+    <img src="images/RiskProcess.png" alt="RiskProcess">
 
 - 위험 식별
     |Risk type|Possible risks|
