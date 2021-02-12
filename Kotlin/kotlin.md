@@ -63,8 +63,6 @@ fun main() {
 <summary>2. 형변환과 배열</summary>
 <div markdown="1">
 
----
-
 ## 형변환
 형변환 : 하나의 변수에 지정된 자료형을 호환되는 다른 자료형으로 변경하는 기능   
 toByte(), toShort(), toInt(), toLong(), toFloat(), toDouble(), toChar() 함수를 통해서 가능하다.
@@ -483,5 +481,245 @@ class Dog: Runner,Eater{
 ```
 ---
 
+</div>
+</details>
+
+<details>
+<summary>11. 코틀린 프로젝트 구조</summary>
+<div markdown='1'>
+패키지명만으로도 패키지를 다르게 설정하는 것이 가능하다.   
+(디렉토리의 구조가 패키지명이 되었던 자바와는 다르게 같은 디렉토리에 있어도 패키지명만 다르면 다른 패키지로 생각한다.)
+
+---
+
+</div>
+</details>
+
+<details>
+<summary>12. 스코프와 접근제한자</summary>
+<div markdown='1'>
+
+## Scope
+Scope : 언어차원에서  변수나 함수, 클래스 같은 멤버들을 서로 공유하여 사용할 수 있는 범위를 지정해둔 단위이다.   
+패키지 내부, 클래스 내부, 함수 내부 등등이 있다.
+
+1. 스코프 외부에서는 스코프 내부의 멤버를 참조연산자를 통해서만 참조 가능하다.
+2. 동일스코프 내에서는 멤버를 공유할 수 있다.
+3. 하위 스코프에서는 상위스코프의 멤버를 재정의 할 수 있다.
+
+ `스코프의 같은 레벨에서는 같은 이름의 멤버를 만들어서는 안된다.`   
+`스코프 외부에서 스코프 내부로 접근하려면 참조연산자를 사용해야한다.`
+## 접근제한자
+접근제한자 : 스코프 외부에서 스코프 내부에 접근할 때, 그 권한을 개발자가 제어할 수 있는 기능
+
+~~~
+- public    
+- internal    
+- private    
+- protected
+~~~
+
+- 패키지 스코프
+  1. public (기본값) : 어떤 패키지에서도 접근 가능
+  2. internal : 같은 모듈 내에서만 접근 가능
+  3. private : 같은 파일내에서만 접근가능 
+  4. protected : 사용하지 않는다.
+
+- 클래스 스코프
+  1. public (기본값) : 클래스외부에서 늘 접근 가능
+  2. private : 클래스 내부에서만 접근가능 
+  3. protected : 클래스 자신과 상속받은 클래스에서 접근 가능
+  4. internal : 사용하지 않음
+
+```kotlin
+var a ="패키지 스코프"
+
+class B{
+    var a = "클래스 스코프"
+    fun print(){
+        println(a)
+    }
+}
+fun main(){
+    var a = "함수 스코프"
+    println(a)
+    B().print()
+} 
+```
+---
+</div>
+</details>
+
+<details>
+<summary>13. 고차함수와 람다함수</summary>
+<div markdown='1'>
+
+## 고차함수
+**고차함수** :  함수를 마치 클래스에서 만들어낸 인스턴스처럼 취급하는 방법   
+함수를 패러미터로 넘겨줄수도 있으며 결과값으로 반환받을수도 있는 방법   
+코틀린에서는 모든 함수를 고차함수로 사용가능하다. 
+
+~~~kotlin
+function: (String) -> Unit(Unit은 반환형이 없다는 것을 의미) 
+// 이러한 형태의 함수는 다 파라미터로 받을 수 있게됨
+~~~
+
+**::** -> 일반함수를 고차함수로 변경해주는 연산자
+
+## 람다함수
+**람다함수** : 그 자체가 고차함수임 따라서 별도의 연산자 없이도 변수에 담을 수 있다.
+
+
+**고차함수와 람다함수를 사용하면 함수를 일종의 변수로 사용할 수 있다는 편의성도 있고, 컬렉션의 조작이나 스코프 함수의 사용에도 도움이 된다.**
+
+```kotlin
+fun main(){
+	b(::a)
+    val c: (String)->Unit = {str -> println("$str 람다함수")}
+    //val c: {str:String -> println("$str 람다함수")}
+    b(c)
+} 
+fun a(str:String){
+    println("$str 함수 a")
+}
+fun b(function: (String)->Unit){
+    function("b가 호출한")
+}
+```
+
+---
+</div>
+</details>
+
+<details>
+<summary>14. 스코프 함수</summary>
+<div markdown='1'>
+
+## 스코프 함수
+**스코프 함수** : 람다함수를 활용한 특별한 함수   
+함수형 언어의 특징을 좀 더 편리하게 사용할 수 있도록 기본 제공하는 함수이다.    
+인스턴스의 속성이나 함수를 좀 더 깔끔하게 불러 쓸 수 있다.
+
+1. 람다함수도 여러 구문의 사용이 가능    
+   람다함수가 여러줄일 경우 마지막 구문의 결과값이 반환된다. 
+2. 람다함수에 패러미터가 없다면 실행할 구문들만 나열하면 된다.
+3. 패러미터가 하나뿐이라면 it 사용    
+   패러미터가 여러개라면 패러미터의 이름을 일일히 써야한다.    
+   패러미터가 단 하나라면 it이라는 키워드로 대체해서 사용할 수 있다.
+
+스코프함수에는  apply, run, with, also, let가 있다. 
+- apply : 인스턴스를 생성한 후  변수에 담기전에 초기화과정을 수행할 때 많이 사용함   
+main 함수와 별도의 scope에서 인스턴스의 변수와 함수를 조작함으로 코드가 깔끔해진다는 장점이 있다.
+- run : apply처럼 run스코프 안에서 참조연산자를 사용하지 않아도 된다는 점은 같지만 일반 람다함수처럼 인스턴스 대신에 결과값을 반환한다는 점이 차이점   
+따라서 인스턴스가 이미 만들어진 후에 인스턴스의 함수나 속성을 scope내에서  사용해야할 때 유용하다.
+- with : run과 동일한 기능을 가지지만, 단지 인스턴스를 참조연산자 대신 패러미터로 받는다는 차이뿐
+- also/let : 처리가 끝나면 인스턴스를 반환 (apply/ also)    
+처리가 끝나면 최종값을 반환(run/ let)   
+apply와 run이 인스턴스의 변수와 함수를 사용할 수 있었다면, also,let 은 마치 패러미터로 인스턴스를 넘긴것처럼 it을 통해서 인스턴스를 사용할 수 있다.
+> **왜 패러미터를 통해서 인스턴스를 사용하는 귀찮은 과정을 거치는가?**
+`이는 같은 이름의 변수나 함수가 scope 바깥에 중복되어있는경우 혼란을 방지하기 위해서`
+
+
+```kotlin
+fun main(){
+    var price = 5000
+	var a = Book("코틀린",10000).apply{
+    	name = "[초특가]"+name
+    	discount()
+    }
+    /* price가 5000원으로 출력되게 된다.
+    why? run함수가 인스턴스 내의 price속성보다 run 이 속해있는 main함수의 price변수를 우선시하고 있기 때문이다.*/
+    a.run{
+        println("상품명: ${name}, 가격:${price}원")
+    }
+   a.let{
+        println("상품명: ${it.name}, 가격:${it.price}원")
+    }
+	println(a.price)
+} 
+class Book(var name :String,var price:Int){
+    fun discount(){
+        price -= 2000
+    }
+}
+```
+---
+</div>
+</details>
+
+<details>
+<summary>15. 오브젝트</summary>
+<div markdown='1'>
+
+## 오브젝트
+클래스는 단지 인스턴스 객체를 만들기 위한 틀이므로 내부에있는 속성이나 함수를 사용하려면 생성자를 통해 실체가 되는 인스턴스 객체를 만들어야했다.    
+공통적인 속성과 함수를 사용해야하는 코드에서는 굳이 클래스를 쓸 필요없이 object를 사용하는 것.   
+Singleton Pattern을 언어 차원에서 지원해주는 것이다.
+```kotlin
+// 인스턴스를 생성하지 않고 그 자체로 객체이기 때문에 생성자는 사용하지 않는다.  
+object name {
+
+} 
+```
+
+```kotlin
+fun main(){
+    println(Counter.count)
+    
+    Counter.countUp()
+    Counter.countUp()
+
+    println(Counter.count)
+    Counter.clear()
+    
+    println(Counter.count)
+}
+object Counter{
+    var count = 0;
+    fun countUp(){
+        count++;
+    }
+	fun clear(){
+        count = 0
+    }
+}
+```
+
+object로 선언된 객체는 최초 사용시 자동으로 생성되며 이후에는 코드 전체에서 공용으로 사용될 수 있으므로 프로그램이 종료되기 전까지 공통적으로 사용할 내용들을 묶어 만드는 것이 좋다.
+
+기존 클래스안에도 object를 만들 수 있다.    
+`Companion Object`   
+인스턴스가 사용할 공용 속성 및 함수를 이를 사용한다.
+이는 기존의 언어가 가진 static 멤버와 비슷한 느낌이다.
+
+```kotlin
+fun main(){
+	var a = FoodPoll("짬뽕")
+    var b = FoodPoll("짜장")
+	
+    a.vote()
+    a.vote()
+    
+    b.vote()
+    b.vote()
+    b.vote()
+    
+    println("${a.name} : ${a.count}")
+	println("${b.name} : ${b.count}")
+	println("통계 : ${FoodPoll.total}")
+
+}
+class FoodPoll(val name: String){
+    companion object {
+        var total = 0
+    }
+    var count =0;
+    fun vote(){
+        total++;
+        count++
+    }
+}
+```
+---
 </div>
 </details>
