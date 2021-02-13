@@ -1,6 +1,10 @@
 # Kotlin 정리
-  **[테크과학! DiMo](https://www.youtube.com/c/CHDiMo/featured)의 코틀린강좌를 보고 정리하였습니다.**   
-  [Kotlin Playground](https://play.kotlinlang.org/)를 통해서 코드를 실행시켜볼 수 있다.
+**[테크과학! DiMo](https://www.youtube.com/c/CHDiMo/featured)의 코틀린강좌를 보고 정리하였습니다.**   
+[Kotlin Playground](https://play.kotlinlang.org/)를 통해서 코드를 실행시켜볼 수 있다.   
+  
+*(복습할때 코드를 꼭 실행시켜보자.)*
+
+<br>
 
 # 목차
 <details>
@@ -717,6 +721,360 @@ class FoodPoll(val name: String){
     fun vote(){
         total++;
         count++
+    }
+}
+```
+---
+</div>
+</details>
+
+<details>
+<summary>16. 익명객체와 옵저버 패턴</summary>
+<div markdown='1'>
+
+## 옵저버패턴
+**옵저버패턴** : 이벤트가 일어나는것을 감시하는 감시자의 역할을 만든다고 하는것
+
+```kotlin
+fun main(){
+    EventPrinter().start()
+}
+interface EventListener{
+    fun onEvent(count: Int)
+}
+
+class Counter(var listener:EventListener){
+    fun count(){
+        for(i in 1..100){
+            if(i%5==0) listener.onEvent(i)
+        }
+    }
+}
+class EventPrinter:EventListener {
+    override fun onEvent(count:Int){
+        print("${count}-")
+    }
+    fun start(){
+        val counter = Counter(this)
+        counter.count()
+    }
+}
+```
+여기서 EventPrinter가 EventListener를 상속받아 구현하지 않고 임시로 만든 별도의 EventListener 객체를 대신 넘겨줄수도 있다.
+
+이것을 <u>이름이 없는 객체</u>라고 해서 **익명객체**라고 한다.   
+`object: …` 해서 object가 상속받도록 하고 상속받은 함수를 override해서 구현하면 된다.   
+이렇게 만들면 인터페이스를 구현한 객체를 코드 중간에도 즉시 생성해서 사용할 수 있다.
+```kotlin
+fun main(){
+    EventPrinter().start()
+}
+interface EventListener{
+    fun onEvent(count: Int)
+}
+
+class Counter(var listener:EventListener){
+    fun count(){
+        for(i in 1..100){
+            if(i%5==0) listener.onEvent(i)
+        }
+    }
+}
+class EventPrinter {
+    fun start(){
+        val counter = Counter(object:EventListener{
+            override fun onEvent(count:Int){
+                print("${count}-")
+            }
+        })
+        counter.count()
+    }
+}
+```
+
+---
+</div>
+</details>
+
+<details>
+<summary>17. 다형성</summary>
+<div markdown='1'>
+
+## 다형성
+코틀린 내부에서 생각해보자 -> **Drink** 라는 수퍼클래스를 **Cola**라는 서브클래스가 상속받았다고 해보자.   
+여기서 **Cola**의 공간에는 **Drink**의 객체 공간에 *Cola*의 추가 공간이 생기는 것이다.   
+따라서 **Drink** 기능을 사용하는 변수에 저장되면 **Drink**의 기능은 할 수 있지만, **Cola**의 기능은 하지 못한다.   
+하지만 **Cola** 기능을 사용하는 변수에 저장되면 모든 기능을 사용할 수 있다.
+
+- Up-casting 는 상위 자료형에 하위 자료형을 담는 것이다.
+- Down-casting : 특별한 캐스팅 연산자가 필요하다.
+   - as, is 연산자 : as는 변환시켜주는 연산자, is는 자료형에 호환되는지를 확인한 뒤 변환해주는 연산자이다.
+
+```kotlin
+fun main(){
+    var a = Drink()
+    a.drink()
+    var b:Drink = Cola()
+    b.drink()
+    //이 상태에서 b.washDishes()를 호출하면 참조할 수 없다는 에러 발생
+    //Down casting을 해야한다.
+    if(b is Cola){	//is는 조건문 안에서만 잠시 다운캐스팅 된다
+        b.washDishes()
+    }
+    var c = b as Cola
+    c.washDishes()
+    
+    // 반환값 뿐만 아니라 변수 자체도 다운캐스팅된다
+    b.washDishes()
+}
+open class Drink{
+    var name ="음료"
+    
+    open fun drink(){
+        println("${name}을 마십니다.")
+    }
+}
+class Cola :Drink(){
+    var type = "콜라"
+    override fun drink(){
+        println("${name}중에 ${type}을 마십니다.")
+    }
+    fun washDishes(){
+        println("${type}를 설거지를 합니다.");
+    }
+}
+```
+---
+</div>
+</details>
+
+<details>
+<summary>18. 제네릭</summary>
+<div markdown='1'>
+
+## 제네릭
+**제네릭** : 클래스나 함수에서 사용하는 자료형을 외부에서 지정할 수 있는 기능    
+함수나 클래스를 선언할때 고정적인 자료형 대신 실제 자료형으로 대체되는 타입 패러미터를 받아서 사용하는 기능이다.
+
+따라서 캐스팅연산 없이도 자료형을 그대로 사용할 수 있다.
+
+Type의 이니셜인 T를 사용    
+제네릭을 특정한 수퍼클래스를 상속받은 클래스 타입으로만 제한하려면 
+`<T:SuperClass> ` 
+
+#### 이렇게 선언된 제네릭은 어떻게 사용?   
+제네릭을 사용하면 **캐스팅을 방지**하므로 성능을 높일 수 있다.
+
+```kotlin
+fun main(){
+    // 타입 패러미터를 수동으로 전달할 수도 있지만
+    // 생성자의 패러미터를 통해서 A라는것을 유추 가능. 생략해도 괜찮다.
+    UsingGeneric(A()).doShouting()
+    UsingGeneric(B()).doShouting()
+    UsingGeneric(C()).doShouting()
+    
+    doShouting(B())
+}
+// 함수에도 사용이 가능하다.
+fun <T:A>doShouting(t:T){
+    t.shout();
+}
+open class A{
+    open fun shout(){
+        println("A가 소리칩니다.")
+    }
+}
+
+class B:A(){
+    override fun shout(){
+        println("B가 소리칩니다.")
+    }
+}
+class C:A(){
+    override fun shout(){
+        println("C가 소리칩니다.")
+    }
+}
+class UsingGeneric<T:A> (val t:T){
+    fun doShouting(){
+        t.shout();
+    }
+}
+```
+---
+</div>
+</details>
+
+<details>
+<summary>19. 리스트</summary>
+<div markdown='1'>
+
+## 리스트 
+- `List<out T>` : 생성시에 넣은 객체를 대체, 추가, 삭제할 수 없음
+- `MutableList<T>` : 생성시에 넣은 객체를 대체, 추가, 삭제할 수 있음
+
+생성은 listOf, mutableListOf 를 사용한다.   
+mutableList에서는 shuffle이나 sort도 제공한다.   
+list[인덱스] = 데이터도 가능하다.(배열과 같이 사용 가능)
+
+```kotlin
+fun main(){
+    val a = listOf("사과", "딸기","배")
+    println(a[1])
+    
+    for(fruit in a){
+        print("${fruit} ")
+    }
+    println()
+    
+    val b = mutableListOf(6,3,1)
+    println(b)
+    
+    b.add(4)
+    println(b)
+    
+    b.add(2,8)
+    println(b)
+    
+    b.removeAt(1)
+    println(b)
+    
+    b.shuffle()
+    println(b)
+    
+    b.sort()
+    println(b)
+    
+}
+```
+---
+</div>
+</details>
+
+<details>
+<summary>20. 문자열을 다루는 방법</summary>
+<div markdown='1'>
+
+*(직접 실행시켜보자)*
+#### **1. toLowerCase, toUpperCase, split, joinToString, substring**
+```kotlin
+fun main(){
+    val test1 = "Test.Kotlin.String"
+    
+    println(test1.length)
+    
+    println(test1.toLowerCase())
+    println(test1.toUpperCase())
+    
+    val test2 = test1.split(".")
+    println(test2)
+    
+    println(test2.joinToString())
+    println(test2.joinToString("-"))
+    
+    println(test1.substring(5..10))
+}
+```
+#### **2. isNullOrEmpty, isNullOrBlank**
+```kotlin
+fun main(){
+	val nullString: String? = null
+    val emptyString = ""
+    val blankString = " "
+	val normalString = "A"
+    
+    println(nullString.isNullOrEmpty())
+	println(emptyString.isNullOrEmpty())
+	println(blankString.isNullOrEmpty())
+	println(normalString.isNullOrEmpty())
+	
+    println()
+    println(nullString.isNullOrBlank())
+	println(emptyString.isNullOrBlank())
+	println(blankString.isNullOrBlank())
+	println(normalString.isNullOrBlank())    
+}
+```
+#### **3. startsWith, endsWith, contains**
+```kotlin
+fun main(){
+    var test3 = "kotlin.kt"
+    var test4 = "java.java"
+    
+    println(test3.startsWith("java"))
+	println(test4.startsWith("java"))
+
+    println(test3.endsWith(".kt"))
+	println(test4.endsWith(".kt"))
+
+    println(test3.contains("lin"))
+	println(test4.contains("lin"))
+}
+```
+---
+</div>
+</details>
+
+<details>
+<summary>21. null 값을 처리하는 방법? 동일한지를 확인하는 방법?</summary>
+<div markdown='1'>
+
+## null값 처리하는 방법
+꼭 if문으로 해야하는 것은 아니다.
+
+1. `?.`null safe operator : 참조연산자를 실행하기전에 먼저 객체가 null인지 확인부터 하고 객체가 null이라면 뒤따라 오는 구문을 실행하지 않는다
+2. `?:` elvis operator : 객체가 null이 아니라면 그대로 사용하지만 null이라면 연산자 우측의 객체로 대체되는 연산자 
+3. `!!.` non-null assertion operator : 참조연산자를 사용할때, null여부를 컴파일시 확인하지 않도록 하여 런타임시 null point exception이 나도록 의도적으로 방치하는 연산자
+
+> null safe 연산자는 스코프함수와 사용하면 더욱 편리하다
+
+```kotlin
+fun main(){
+    var a: String? = null
+    
+    println(a?.toUpperCase())
+    println(a?:”default”.toUpperCase())
+    println(a!!.toUpperCase())
+}
+
+ fun main(){
+    var a: String? = null 	//var a:String? = "kotlin EXAM"
+    a?.run{
+        println(toUpperCase())
+        println(toLowerCase())
+    }
+}
+```
+## 동일성
+
+- **내용의 동일성** : 메모리상에 서로 다르게 할당되어있어도 그 내용이 같다면 같다고 판단   
+`a == b`
+- **객체의 동일성** : 메모리 상에 서로 같은 객체를 가리키고 있을 때 같다고 판단   
+`a === b`
+
+```kotlin
+fun main(){
+    var a = Product("콜라",1000)
+    var b = Product("콜라",1000)
+    var c = a
+    var d = Product("사이다",1000)
+
+    println(a==b)
+    println(a===b)
+    
+    println(a==c)
+    println(a===c)
+    
+    println(a==d)
+    println(a===d)
+}
+class Product(val name: String,val price:Int){
+    override fun equals(other:Any?):Boolean{
+        if(other is Product){
+            return other.name == name && other.price == price
+        }else {
+            return false;
+        }
     }
 }
 ```
