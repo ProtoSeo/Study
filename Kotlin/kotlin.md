@@ -1287,3 +1287,417 @@ enum class State(val message:String){
 ---
 </div>
 </details>
+
+<details>
+<summary>25. Set과 Map</summary> 
+<div markdown='1'>
+
+## Set
+Set은 List와 달리 순서가 정렬되지 않으며 중복이 허용되지 않는 클래스이다.  
+객체의 추가, 삭제가 가능한지 여부에 따라 Set과 mutableSet으로 나눈다.
+
+```kotlin
+fun main(){
+	var a = mutableSetOf("귤","바나나","키위")
+    
+    for (item in a){
+        println("${item}")
+    }
+    
+    a.add("자몽")
+    println(a)
+    
+    a.remove("바나나")
+    println(a)
+    
+    println(a.contains("귤"))
+}
+```
+## Map
+Map은 객체를 넣을때, 그 객체를 찾아낼수 있는 key를 쌍으로 넣어주는 컬렉션이다.   
+key ,value
+
+객체의 위치가 아니라 key를 통해서 객체의 위치를 찾는다.   
+같은 key에 다른 객체를 넣으면 기존의 객체가 대체되니 주의해서 사용해야한다.   
+객체의 추가, 삭제가 가능한지 여부에 따라 Map과 mutableMap 으로 나눈다.
+```kotlin
+fun main(){
+    val a = mutableMapOf("레드벨벳" to "음파음파",
+                        "트와이스" to "FANCY",
+                        "ITZY" to "ICY")
+    for (entry in a){
+        println("${entry.key} : ${entry.value}")
+    }
+    
+    a.put("오마이걸","번지")
+    println(a)
+    
+    a.remove("ITZY")
+    println(a)
+    
+    println(a["레드벨벳"])
+}
+```
+---
+</div>
+</details>
+
+<details>
+<summary>26. 컬렉션 함수 #1</summary> 
+<div markdown='1'>
+
+## 컬렉션 함수  
+컬렉션 함수 : list, set, map 과 같은 컬렉션 또는 배열에 일반 함수 또는 람다 함수 형태를 사용하여 for 문 없이 아이템을 순회하며 참조하거나 조건을 걸고, 구조의 변경까지 가능한  여러가지 함수를 지칭
+
+- forEach
+- filter 
+- map 
+- any, all, none
+- first, last
+- firstOrNull, lastOrNull
+- count
+```kotlin
+fun main(){
+    var nameList = listOf("박수영","김지수","김다현","신유나","김지우")
+	
+    nameList.forEach{print(it+" ")}
+    println()
+    
+    println(nameList.filter{it.startsWith("김")})
+    
+    println(nameList.map{"이름 : "+ it})
+    
+    println(nameList.any{it=="김지연"})
+    println(nameList.all{it.length ==3})
+    println(nameList.none{it.startsWith("이")})
+    
+    println(nameList.first{it.startsWith("김")})
+    println(nameList.last{it.startsWith("김")})
+    println(nameList.count{it.contains("지")})
+}
+```
+---
+</div>
+</details>
+
+<details>
+<summary>27. 컬렉션 함수 #2</summary> 
+<div markdown='1'>
+
+### **1. associateBy, groupBy, partition**
+associateBy : 아이템에서 key를 추출하여 map으로 변환하는 함수
+groupBy : key가 같은 아이템 끼리 배열로 묶어 map으로 만드는 함수
+partition : 아이템에 조건을 걸어 두개의 컬렉션으로 나누어줌 그리고 이를 Pair객체에 담아준다.
+
+```kotlin
+fun main(){
+    data class Person(val name:String, val birthYear:Int)
+ 	
+    val personList = listOf(Person("유나",1992),
+                           Person("조이",1996),
+                           Person("츄",1999),
+                           Person("유나",2003))
+    
+    println(personList.associateBy{it.birthYear})
+    println(personList.groupBy{it.name})
+    
+    val (over98,under98) = personList.partition{it.birthYear>1998}
+    println(over98)
+    println(under98)
+}
+```
+### **2. flatMap, getOrElse, zip**
+flatMap : 아이템마다 만들어진 컬렉션을 합쳐서 반환하는 함수
+getOrElse : 인덱스 위치에 아이템이 있으면 아이템을 반환하고 아닌 경우 지정한 기본값을 반환하는 함수
+zip : 컬렉션 두 개의 아이템을 1:1로 매칭하여 새 컬렉션을 만들어 줌
+```kotlin
+fun main(){	
+    val numbers = listOf(-3,7,2,-10,1)
+    
+    println(numbers.flatMap{listOf(it*10,it+10)})
+    
+    println(numbers.getOrElse(1){50})
+    println(numbers.getOrElse(10){50})
+    
+    val names = listOf("A","B","C","D")
+	
+    println(names zip numbers)
+}
+```
+---
+</div>
+</details>
+
+<details>
+<summary>28. 변수의 고급 기술, 상수, lateinit, lazy</summary> 
+<div markdown='1'>
+
+## 상수
+- var은 한번 할당한 객체가 있더라도 다른 객체로 변경해서 할당 가능하다.   
+- val은 한번 할당한 객체가 있다면 다른 객체로 변경이 불가하다
+
+`주의! val은 할당된 객체를 바꿀 수 없을 뿐이지 객체 내부의 속성을 변경할 수 없는것은 아니다.`
+
+**상수** : 컴파일 시점에 결정되어 절대 바꿀 수 없는 값이다.   
+const를 앞에 붙여서 선언   
+상수의 이름은 이례적으로 대문자와 언더바만 사용한다.   
+상수로 선언할 수 있는 것은 기본 자료형만 가능하다.   
+
+companion object안에 선언하여서 객체의 생성과 관계없이 클래스와 관계된 고정적인 값으로만 사용하게 된다.   
+  
+>상수를 사용하는 이유는 변수의 경우 런타임시 객체를 생성하는데 시간이 더 소요되어 성능의 하락이 있기 때문   
+>고정적으로 사용하는 값을 상수를 통해서 객체의 생성없이 성능을 향상시킬 수 있다.
+```kotlin
+fun main(){	
+	val foodCourt = FoodCourt()
+    
+    foodCourt.searchPrice(FoodCourt.FOOD_CREAM_PASTA)
+	foodCourt.searchPrice(FoodCourt.FOOD_STEAK)
+	foodCourt.searchPrice(FoodCourt.FOOD_PIZZA)
+
+}
+class FoodCourt{
+    fun searchPrice(foodName:String){
+        val price = when(foodName){
+            FOOD_CREAM_PASTA -> 13000
+            FOOD_STEAK -> 25000
+            FOOD_PIZZA -> 15000
+            else -> 0
+        }
+        println("${foodName}의 가격은 ${price}원 입니다.")
+    }
+    companion object{
+        const val FOOD_CREAM_PASTA ="크림파스타"
+        const val FOOD_STEAK = "스테이크"
+        const val FOOD_PIZZA = "피자"
+    }
+ }
+```
+## 늦은초기화
+변수를 선언할때 객체를 할당 하지 않는경우에는 컴파일이 되지 않는다.
+**lateinit**을 통해서 초기값의 할당은 나중에 할 수 있도록 하는 키워드
+
+#### **lateinit var 변수의 제한사항**
+초기값 할당 전까지 변수를 사용할 수 없음 (에러발생)   
+기본 자료형에는 사용할 수 없음(String 클래스에는 사용 가능)
+
+lateinit 변수가 초기화 하였는지 여부를 확인할때는 `::a.isinitialized` 를 통해 확인가능하다.   
+이를 통해 오류를 막을 수 있다.
+```kotlin
+fun main(){
+    var a = LateInitSample()
+    println(a.getLateInitText())
+    a.text = "새로 할당한 값"
+    println(a.getLateInitText())
+}
+class LateInitSample{
+    lateinit var text: String
+    
+    fun getLateInitText():String{
+        if(::text.isInitialized){
+            return text;
+        }else {
+            return "기본값";
+        }
+    }
+}
+```
+## 지연 대리자 속성
+변수를 사용하는 시점까지 초기화를 자동으로 늦춰주는 지연 대리자 속성(lazy delegate properties)
+
+```kotlin
+val a : Int by lazy{7}
+```
+코드에서는 선언시 즉시 객체를 생성 및 할당하여 변수를 초기화 하는 형태를 갖고 있지만, 실제 실행시에는 변수를 사용할 때 초기화 된다.   
+코드의 실행시간을 최적화 할 수 있는 코드이다.
+람다함수로 초기화가 진행되므로 여러개의 구문이 들어갈 수 있다.(맨 마지막 값이 결과값이 되므로)
+```kotlin
+fun main(){
+    val number:Int by lazy{
+        println("초기화를 합니다.")
+        7
+    }
+    
+    println("코드를 시작합니다.")
+    println(number)
+    println(number)
+}
+```
+---
+</div>
+</details>
+
+<details>
+<summary>29. 비트연산</summary> 
+<div markdown='1'>
+
+## 비트연산
+
+10진수를 2진법으로 계산   
+코틀린에서 정수형은 부호를 포함하므로 최상위 비트가 부호비트로 사용된다.   
+따라서 최상위 비트에는 정보를 담지 않는 것이 좋다.
+- shl(<<), shr(>>), ushr(>>>)
+- and 비트를 확인하는 방법으로 주로 사용, 비트를 clear하는 방법으로 사용
+- or 비트의 set연산을 할때 주로 사용
+- xor 비트들이 같은지 비교하는 방법
+- inv 비트를 반전시키는 역할
+
+```kotlin
+fun main(){
+    var bitData:Int = 0b10000
+
+    bitData = bitData or(1 shl 2)
+    println(bitData.toString(2))
+    
+    var result = bitData and(1 shl 4)
+    println(result.toString(2))
+        
+    println(result shr 4)
+    
+    bitData = bitData and((1 shl 4).inv())
+	println(bitData.toString(2))
+    
+    println((bitData xor(0b10100)).toString(2))
+}
+```
+---
+</div>
+</details>
+
+<!-- <details>
+<summary>30. 코루틴을 통한 비동기 처리</summary> 
+<div markdown='1'> -->
+
+여러개의 루틴을 동시에 실행하여 결과를 내고싶다면? —> 비동기처리 == 코루틴
+메인루틴 -> 실행과 종료를 결정할 수 있다. -> 코루틴
+
+코루틴을 사용할 때는 `import kotlinx.coruotines.*` 을 import해야한다.
+
+코루틴은 제어범위 및 실행범위를 지정할 수 있는데 이를 코루틴의 scope라고 한다.
+
+GlobalScope와 CoroutineScope를 지원한다.
+- GlobalScope : 프로그램 어디서나 제어 동작이 가능한 기본 범위
+- CoroutineScope : 특정한 목적의 DIspatcher를 지정하여 제어 및 동작이 가능한 범위
+
+
+CoroutineScope 를 만들때 적용가능한 DIspatcher
+- Dispathcers.Default : 기본적인 백그라운드 동작
+- Dispathcers.IO : I/O에 최적화 된 동작
+- Dispathcers.Main : 메인(UI) 스레드에서 동작
+
+코루틴은 이러한 스코프에서 제어되도록 생성될 수 있다.   
+생성된 스코프에서 launch나 async를 통해서 코루틴을 생성할 수 있다. 
+
+**launch** vs **async** -> 반환값이 있는지의 차이
+
+- launch : 반환값이 없는 Job객체
+- async : 반환값이 있는 Deffered 객체
+
+두 함수는 람다함수의 형태를 가지고 있으며, 그렇기 떄문에 async는 마지막 결과값이 반환된다.
+
+코루틴은 제어되는 스코프 또는 프로그램 전체가 종료되면 함께 종료된다.   
+코루틴이 끝까지 실행되는 것을 보장하려면 일정한 범위에서 코루틴이 모두 실행될 때까지 잠시 기다려줘야한다.
+```kotlin
+import kotlinx.coroutines.*
+fun main(){
+    val scope = GlobalScope
+    
+    scope.launch{
+        for(i in 1..5){
+            println(i)
+        }
+    }
+}
+```
+
+runBlocking을 통해서 코루틴이 종료될때까지 메인 루틴을 잠시 대기시켜준다.
+```kotlin
+import kotlinx.coroutines.*
+fun main(){
+    runBlocking{
+        launch{
+            for(i in 1..5){
+                println(i)
+            }
+        }
+    }
+}
+```
+루틴의 대기를 위한 추가적인 함수들도 있다.   
+- delay(milisecond:Long) : milisecond단위로 루틴을 잠시 대기시키는 함수
+- Job.join() : Job의 실행이 끝날때까지 대기하는 함수
+- Defferred.await() : Defferred의 실행이 끝날때까지 대기하는 함수   
+  —> Defferred의 결과도 반환한다.
+
+세 함수는 코루틴 내부 또는 runBlocking과 같은 루틴의 대기가 가능한 구문 안에서만 동작이 가능
+```kotlin
+import kotlinx.coroutines.*
+fun main(){
+    runBlocking{
+        val a = launch{
+            for(i in 1..5){
+                println(i)
+                delay(10)
+            }
+        }
+        val b = async{
+            "async 종료"
+        }
+        println("async 대기")
+        println(b.await())
+        
+        println("launch 대기")
+        a.join()
+        println("launch 종료")
+    }
+}
+```
+코루틴 실행도중 중단하는 방법   
+코루틴에 cancel()을 걸어주면 다음 두가지 조건이 발생하며 코루틴을 종료할 수 있다.   
+1. 코루틴 내부의 delay()함수 또는 yeild()함수 가 사용된 위치까지 수행된 뒤 종료됨
+2. cancel()로 인해 속성인 isActive가 false가 되므로 이를 확인하여 수동으로 종료함
+
+```kotlin
+import kotlinx.coroutines.*
+fun main(){
+    runBlocking{
+        val a = launch{
+            for(i in 1..5){
+                println(i)
+                delay(10)
+            }
+        }
+        val b = async{
+            "async 종료"
+        }
+        println("async 대기")
+        println(b.await())
+        
+        println("launch 취소")
+        a.cancel()
+        println("launch 종료")
+        
+    }
+}
+```
+제한시간 내에 수행되면 결과값을 아닌경우 null을 반환하는 함수
+withTimeoutOrNull()   
+이 함수도 join이나 await처럼 blocking함수다. 
+```kotlin
+import kotlinx.coroutines.*
+fun main(){
+    runBlocking{
+        val result = withTimeoutOrNull(50){
+            for(i in 1..10){
+                println(i)
+                delay(10)
+            }
+            "Finish"
+        }
+        println(result)
+    }
+}
+```
+---
+</div>
+</details>
