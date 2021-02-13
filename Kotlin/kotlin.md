@@ -1081,3 +1081,209 @@ class Product(val name: String,val price:Int){
 ---
 </div>
 </details>
+
+<details>
+<summary>22. 함수의 argument를 다루는 방법과 infix 함수</summary> 
+<div markdown='1'>
+
+## 함수의 argument를 다루는 방법
+
+코틀린은 함수의 overloading을 지원함 
+> oveloading : 같은 이름의 함수를 여러개 지원하는 것 (패러미터의 개수와 타입이 다르다면)
+
+```kotlin
+fun main(){
+	read(8)
+    read("감사합니다.")
+}
+fun read(a:Int){
+    println("숫자 $a 입니다.")
+}
+fun read(a:String){
+    println(a)
+}
+```
+- **dafault arguments** : 패러미터를 받아야 하지만, 별다른 패러미터가 없다면 기본값으로 작동하도록 한다.
+
+- **named arguments** : 패러미터의 순서와 관계없이 패러미터의 이름을 사용하여 직접 패러미터의 값을 할당하는 기능
+
+```kotlin
+ fun main(){
+	delivery("짬뽕")
+    delivery("책",3)
+    delivery("노트북",30,"학교")
+    
+    delivery("책상",destination="친구집")
+}
+fun delivery(name:String,count:Int = 1,destination:String = "집"){
+	println("${name}, ${count}개를 ${destination}에 배달하였습니다.")
+}
+```
+**variable number of arguments(vararg)** : 개수가 지정되지 않은 패러미터이다.    
+따라서 다른 패러미터와 같이 사용할때 맨 마지막에 넣어야 한다.   
+마치 배열처럼 for문으로 참조 가능
+```kotlin
+fun main(){
+	sum(1, 2, 3, 4)
+}
+fun sum(vararg numbers:Int){
+    var sum = 0
+    
+    for(n in numbers){
+        sum +=n
+    }
+    print(sum)
+} 
+```
+## Infix 함수
+Infix 함수 : 함수를 연산자처럼 사용할 수 있게하는 함수  
+
+클래스 안에서 infix함수를 적용할 때는 적용할 클래스가 자기 자신이므로 클래스의 이름은 쓰지 않는다.
+
+```kotlin
+fun main(){
+	println(6 multiply 4)
+    println(6.multiply(4))
+}
+infix fun Int.multiply(x:Int) = this*x
+```
+---
+</div>
+</details>
+
+<details>
+<summary>23. 중첩 클래스와 내부 클래스</summary> 
+<div markdown='1'>
+
+## 중첩클래스
+**중첩클래스** : 하나의 클래스가 다른 클래스의 기능과 강하게 연관되어 있다는 의미를 전달하기 위해 만들어진형식
+
+형태만 내부에 존재할 뿐, *외부클래스의 내용을 공유할 수 없다.* (별개의 클래스이다.)
+
+```kotlin
+class Outer{
+	class Nested{
+	
+	}
+}
+Outer.Nested() // 이렇게 사용
+```
+
+## 내부 클래스
+**내부클래스** : 혼자서는 객체를 만들 수 없고 외부 클래스의 객체가 있어야만 생성과 사용이 가능한 클래스
+
+내부에 선언된 것이므로 *외부 클래스의 속성과 함수의 사용이 가능*하다. 
+
+```kotlin
+class Outer{
+	inner class Nested{
+	
+	}
+}
+```
+
+```kotlin
+ fun main(){
+     Outer.Nested().introduce()
+     val outer = Outer()
+     val inner = outer.Inner();
+     
+     inner.introduceInner();
+     inner.introduceOuter()
+     
+     outer.text = "Changed Outer Class"
+     inner.introduceOuter()
+ }
+ class Outer{
+     var text = "Outer Class"
+     
+     class Nested{
+         fun introduce(){
+             println("Nested Class")
+         }
+     }
+     inner class Inner{
+         var text = "Inner Class"
+         
+         fun introduceInner(){
+             println(text)
+         }
+         fun introduceOuter(){
+             println(this@Outer.text)
+         }
+     }
+ }
+```
+> 중첩클래스와 내부클래스는 클래스간의 연계성을 표현하여 코드의 가독성 및 작성 편의성이 올라갈 수 있으므로 적절한 상황에서 사용해야한다.
+
+---
+</div>
+</details>
+
+<details>
+<summary>24. 데이터 클래스와 이넘 클래스 </summary> 
+<div markdown='1'>
+
+## 데이터클래스
+**데이터클래스(Data class)** : 데이터를 다루는 데에 최적화된 class, 5가지 기능을 내부적으로 자동으로 생성해줌
+
+1. 내용의 동일성을 판단하는 equals()의 자동구현
+2. 객체의 내용에서 고유한 코드를 생성하는 hashcode()의 자동구현
+3. 포함된 속성을 보기쉽게 나타내는 toString()의 자동구현
+4. 객체를 복사하여 똑같은 내용의 새 객체를 만드는 copy()의 자동구현    
+   copy함수는 똑같은 패러미터를 받을수도 있지만 패러미터를 주어서 해당 패러미터를 교체하여 생성할 수도 있다.
+5. 속성을 순서대로 반환하는 componentX()의 자동구현
+
+```kotlin
+fun main(){
+    val a = General("보영",212)
+    println(a == General("보영",212))
+    println(a.hashCode())
+    println(a)
+    
+    val b = Data("루다",306)
+    println(b == Data("루다",306))
+    println(b.hashCode())
+    println(b)
+    
+    println(b.copy())
+    println(b.copy("아린"))
+    println(b.copy(id = 412))
+    println()
+    val list = listOf(Data("보영",212),Data("루다",306),Data("아린",618))
+    
+    for ((a,b) in list){
+        println("${a}, ${b}")
+    }
+}
+class General(val name:String, val id:Int)
+
+data class Data(val name:String, val id:Int)
+```
+## 이넘클래스
+**이넘 클래스(Enum class)** : enumerated type 열거형의 준말이다.   
+enum class안의 객체들은 관행적으로 상수를 나타낼때 표현하는 대문자로 표현한다.  
+enum class의 객체들은 고유한 속성과 함수를 가질 수 있다.
+
+```kotlin
+fun main(){
+	var state = State.SING
+    println(state)
+    
+    state = State.SLEEP
+    println(state.isSleeping())
+    
+    state = State.EAT
+    println(state.message)
+}
+enum class State(val message:String){
+    SING("노래를 부릅니다."),
+    EAT("밥을 먹습니다."),
+    SLEEP("잠을 잡니다.");
+    
+    fun isSleeping() = this == State.SLEEP
+}
+```
+---
+</div>
+</details>
