@@ -1564,9 +1564,9 @@ fun main(){
 </div>
 </details>
 
-<!-- <details>
+<details>
 <summary>30. 코루틴을 통한 비동기 처리</summary> 
-<div markdown='1'> -->
+<div markdown='1'>
 
 여러개의 루틴을 동시에 실행하여 결과를 내고싶다면? —> 비동기처리 == 코루틴
 메인루틴 -> 실행과 종료를 결정할 수 있다. -> 코루틴
